@@ -115,3 +115,23 @@ Else:
 ACK$ // Stands for Acknowledge (not sure how to spell it but it's usually abbreviated ACK :p)
 
 Then the client gets on with the data
+
+== Authentication ==
+
+Other than the AUTH message, the server should NOT accept any messages from any client until authentication is complete. The format for authentication is:
+
+AUTH username; password$
+
+eg
+
+AUTH foo; bar$
+
+The server will then reply:
+
+AUTHGOOD$
+
+or 
+
+AUTHBAD$
+
+Simple!
