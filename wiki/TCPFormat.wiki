@@ -33,7 +33,9 @@ The first two are obvious, but the escape character might need a bit of clarific
 
 We want to be able to set up the table via the GUI. This will go something like this:
 
-{{{SETGROUPS 5; Year 7; Year 8; Year 9; Year 10; Year 12$ // 5 groups, names of each group
+{{{NEWTABLE BWS Sports Day 2009$
+
+SETGROUPS 5; Year 7; Year 8; Year 9; Year 10; Year 12$ // 5 groups, names of each group
 
 BEGIN Year 7$ // Begin the year 7 group
 EVENTS 5$ // No. events
@@ -59,3 +61,22 @@ The same goes with the server to the clients. This could easily be done within t
 == Inputting data ==
 
 Coming soon...
+
+== Requesting the database ==
+
+Coming soon
+
+== Busy ==
+Before any data is sent from the client to the server, the client should send:
+
+HANDSHAKE$
+
+If the server is busy dealing with another request, it sends:
+
+BUSY$
+
+Else:
+
+ACK$ // Stands for Acknowledge (not sure how to spell it but it's usually abbreviated ACK :p)
+
+Then the client gets on with the data
