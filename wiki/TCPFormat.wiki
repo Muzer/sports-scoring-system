@@ -27,6 +27,8 @@ The first two are obvious, but the escape character might need a bit of clarific
 
 %dnc%                        //Did not compete. The student and the reserve (or two students) were both off so there were not enough people, so nobody could compete in this event.
 
+%empty%                      //If the user left a field empty during table creation, could cause problems otherwise
+
 (Obviously these will be represented by radio boxes, along with "Student competed" in which case it would just send the times as normal, in the client).
 
 
@@ -50,6 +52,18 @@ END Year 7$
 ENDDATABLOCK$ // Signifies that the command has finished
 }}}
 
+The server, once it reads ENDDATABLOCK, will react, by sending all the data back "in its own words" (in other words, reading it out of the array it just created). It should be in the same format, and in an ideal world, exactly the same.
+
+The client will then display the data, and ask the user if it is OK. If it is, the client sends:
+
+OK$
+
+Else:
+
+NOK$
+
+(and then after the delay whilst the user edits the data, the new set of data).
+
 == Keepalive ==
 
 No matter its state (unless obviously crashed), every minute, the client will send:
@@ -68,6 +82,14 @@ Coming soon...
 == Requesting the database ==
 
 Coming soon
+
+== Update ==
+
+Once the database has been updated, the DB thread will send:
+
+UPDATE$
+
+To all clients. The clients will then request the database (as above), unless they are "in the middle of something". Once a client finishes submitting data, it obviously requests the whole database.
 
 == Busy ==
 Before any data is sent from the client to the server, the client should send:
