@@ -1,0 +1,5 @@
+#summary Ideas
+
+= Ideas =
+
+* Use QT Creator to create the GUI and use a CLI interface for the server.
