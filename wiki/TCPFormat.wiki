@@ -1,0 +1,61 @@
+#summary The format of the TCP commands
+
+
+In this file, comments for the TCP commands are specified C++-style. These will not be sent and will cause a parse error if they are sent. They are just for convenience for this wiki page.
+
+
+The following are special characters:
+
+$ indicates line ending
+
+; is the separator
+
+% is the escape character
+
+
+If these are entered as part of the name or any other string, they should be escaped:
+
+%dollar%
+%semicolon%
+%percent%
+
+I might think of more special characters.
+
+The first two are obvious, but the escape character might need a bit of clarification. If a student did not compete or finish/qualify (all throws were bad for example), one of the following is used:
+
+%dnf%                        //Did not finish (track) or qualify (field - all throws/jumps were bad)
+%dnc%                        //Did not compete. The student and the reserve (or two students) were both off so there were not enough people, so nobody could compete in this event.
+
+(Obviously these will be represented by radio boxes, along with "Student competed" in which case it would just send the times as normal, in the client).
+
+
+== Table setup ==
+
+We want to be able to set up the table via the GUI. This will go something like this:
+
+{{{SETGROUPS 5; Year 7; Year 8; Year 9; Year 10; Year 12$ // 5 groups, names of each group
+
+BEGIN Year 7$ // Begin the year 7 group
+EVENTS 5$ // No. events
+EVENT 100 metre sprint; TIMELOW; 12; 13; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$ // Name, type (TIMELOW (lowest best)/TIMEHIGH (highest best)/DISTANCE/POINTS), number of places, score for each place
+// ...
+EVENT Javelin; DISTANCE; 12; 13; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
+EVENT Relay; TIMELOW; 28; 28; 27; 26; 25; 24; 23; 22; 21; 20; 19; 18; 17; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
+END Year 7$
+// And so on
+ENDDATABLOCK$ // Signifies that the command has finished}}
+
+== Keepalive ==
+
+No matter its state (unless obviously crashed), every minute, the client will send:
+
+KEEPALIVE$
+
+This makes the server keep the connection open.
+
+
+The same goes with the server to the clients. This could easily be done within the main keepalive thread; no need to make another
+
+== Inputting data ==
+
+Coming soon...
