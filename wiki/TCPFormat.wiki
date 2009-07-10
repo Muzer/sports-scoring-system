@@ -24,6 +24,7 @@ I might think of more special characters.
 The first two are obvious, but the escape character might need a bit of clarification. If a student did not compete or finish/qualify (all throws were bad for example), one of the following is used:
 
 %dnf%                        //Did not finish (track) or qualify (field - all throws/jumps were bad)
+
 %dnc%                        //Did not compete. The student and the reserve (or two students) were both off so there were not enough people, so nobody could compete in this event.
 
 (Obviously these will be represented by radio boxes, along with "Student competed" in which case it would just send the times as normal, in the client).
