@@ -34,7 +34,8 @@ The first two are obvious, but the escape character might need a bit of clarific
 
 We want to be able to set up the table via the GUI. This will go something like this:
 
-{{{NEWTABLE BWS Sports Day 2009$
+{{{
+NEWTABLE BWS Sports Day 2009$
 
 SETGROUPS 5; Year 7; Year 8; Year 9; Year 10; Year 12$ // 5 groups, names of each group
 
@@ -46,7 +47,8 @@ EVENT Javelin; DISTANCE; 12; 13; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
 EVENT Relay; TIMELOW; 28; 28; 27; 26; 25; 24; 23; 22; 21; 20; 19; 18; 17; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
 END Year 7$
 // And so on
-ENDDATABLOCK$ // Signifies that the command has finished}}}
+ENDDATABLOCK$ // Signifies that the command has finished
+}}}
 
 == Keepalive ==
 
