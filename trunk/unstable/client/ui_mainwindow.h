@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'mainwindow.ui'
 **
-** Created: Sat Jul 11 16:10:49 2009
+** Created: Sat Jul 11 16:23:37 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -56,6 +56,7 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setMargin(11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setSizeConstraint(QLayout::SetDefaultConstraint);
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -127,6 +128,7 @@ public:
 
 
         retranslateUi(MainWindow);
+        QObject::connect(btnConnect, SIGNAL(clicked()), MainWindow, SLOT(btnConnect_clicked()));
 
         tabWidget->setCurrentIndex(0);
 
