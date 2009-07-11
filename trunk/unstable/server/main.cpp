@@ -57,18 +57,29 @@ void authenticate(int clientnum, char *buf){
     strncpy(userandpassword-1,buf+4,strlen(buf)-take_number);
     char *username = strtok(userandpassword,";");
     char *password = strtok(NULL,";");
+    int len;
+    if(password == NULL || username == NULL){
+        cout << "Client " << clientnum << " Authentication failed, as they didn't specify a username or a password (or both)!\n";
+        auth[clientnum] = false;
+        len = strlen("AUTHBAD$\n");
+        if(sendall(new_fd[clientnum],(char*)"AUTHBAD$\n",&len) == -1){
+            cout << "Send failed";
+            socketclose(new_fd[clientnum]);
+            ok[clientnum] = false;
+        }
+        return;
+    }
     if(password[0] == ' '){
         char *realpassword = (char *)malloc(strlen(password));
         strncpy(realpassword,password+1,strlen(password)-1);
         password = realpassword;
 //        cout << password << endl;
     }
-    int len;
     if(strcmp(username,correct_username) == 0 && strcmp(password,correct_password) == 0){
         cout << "Client " << clientnum << "'s Authentication as user " << username << " succesful!\n";
         auth[clientnum] = true;
-        len = strlen("AUTHGOOD$");
-        if(sendall(new_fd[clientnum],(char*)"AUTHGOOD$",&len) == -1){
+        len = strlen("AUTHGOOD$\n");
+        if(sendall(new_fd[clientnum],(char*)"AUTHGOOD$\n",&len) == -1){
             cout << "Send failed";
             socketclose(new_fd[clientnum]);
             ok[clientnum] = false;
@@ -76,8 +87,8 @@ void authenticate(int clientnum, char *buf){
     } else {
         cout << "Client " << clientnum << "'s Authentication as user " << username << " failed!\n";
         auth[clientnum] = false;
-        len = strlen("AUTHBAD$");
-        if(sendall(new_fd[clientnum],(char*)"AUTHBAD$",&len) == -1){
+        len = strlen("AUTHBAD$\n");
+        if(sendall(new_fd[clientnum],(char*)"AUTHBAD$\n",&len) == -1){
             cout << "Send failed";
             socketclose(new_fd[clientnum]);
             ok[clientnum] = false;
@@ -93,6 +104,7 @@ void *ping(){
                 if(ping_ready[loopvar] == true){
                     no_pings[loopvar] = 0;
                     ping_ready[loopvar] = false;
+                    cout << "Recieved keepalive from " << loopvar << endl;
                 }
                 else
                     no_pings[loopvar]++;

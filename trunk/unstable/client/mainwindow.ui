@@ -31,7 +31,7 @@
       <item>
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
-         <string>Connect</string>
+         <string>Connect/Disconnect</string>
         </property>
        </widget>
       </item>
@@ -46,6 +46,12 @@
     </item>
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="sizeIncrement">
+       <size>
+        <width>3000</width>
+        <height>3000</height>
+       </size>
+      </property>
       <property name="tabShape">
        <enum>QTabWidget::Rounded</enum>
       </property>

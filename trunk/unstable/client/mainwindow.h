@@ -3,6 +3,8 @@
 
 #include <QtGui/QWidget>
 #include <QTcpSocket>
+#include <qmessagebox.h>
+
 
 namespace Ui
 {
@@ -22,6 +24,7 @@ private:
 
 private slots:
         void btnConnect_clicked();
+
 };
 
-#endif // MAINWINDOW_H
+#endif
