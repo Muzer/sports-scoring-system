@@ -61,7 +61,7 @@ void authenticate(int clientnum, char *buf){
         char *realpassword = (char *)malloc(strlen(password));
         strncpy(realpassword,password+1,strlen(password)-1);
         password = realpassword;
-        cout << password << endl;
+//        cout << password << endl;
     }
     int len;
     if(strcmp(username,correct_username) == 0 && strcmp(password,correct_password) == 0){
