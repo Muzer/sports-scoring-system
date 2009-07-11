@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QtGui/QWidget>
+#include <QTcpSocket>
 
 namespace Ui
 {
