@@ -16,9 +16,31 @@
 
 using namespace std;
 
+bool ok[1000];
+bool ping_ready[1000];
+int no_pings[1000];
+int current_socket = 1;
+int new_fd[1000];
+
 void *ping(){
     while(1){
-        cout << "Ping running\n";
+        int loopvar;
+        for(loopvar=1;loopvar<current_socket;loopvar++){
+            if(ok[loopvar] == true){
+                if(ping_ready[loopvar] == true){
+                    no_pings[loopvar] = 0;
+                    ping_ready[loopvar] = false;
+                }
+                else
+                    no_pings[loopvar]++;
+                if(no_pings[loopvar]>=120){
+                    ok[loopvar] = false;
+                    socketclose(new_fd[loopvar]);
+                    cout << "Client " << loopvar << " timed out...\n";
+                }
+            }
+
+        }
         sleep(1);
     }
 }
@@ -43,11 +65,10 @@ int main(int argc, char *argv[])
 #endif
     // Set up struct
     int status;
-    int s, new_fd[50];
+    int s;
     struct sockaddr_storage their_addr;
     socklen_t addr_size;
     struct addrinfo hints;
-    int current_socket = 1;
     struct addrinfo *servinfo;  // will point to the results
 
     memset(&hints, 0, sizeof hints); // make sure the struct is empty
@@ -94,23 +115,27 @@ int main(int argc, char *argv[])
     pthread_t pingthrd;
     int retval;
     retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))ping,NULL);
-    char *recievehole;
+    char recievehole[65535];
     struct timeval tv;
     fd_set readfds;
     tv.tv_sec = 0;
     tv.tv_usec = 0;
-    bool ok[50];
     while(1){
+        memset(recievehole,0,65535);
         FD_ZERO(&readfds);
         FD_SET(s, &readfds);
         select(s+1, &readfds, NULL, NULL, &tv);
         if (FD_ISSET(s, &readfds)){
-            addr_size = sizeof their_addr;
-            new_fd[current_socket] = accept(s, (struct sockaddr *)&their_addr, &addr_size);
-            ok[current_socket] = true;
-            current_socket++;
+            if(current_socket <= 1000){
+                addr_size = sizeof their_addr;
+                new_fd[current_socket] = accept(s, (struct sockaddr *)&their_addr, &addr_size);
+                ok[current_socket] = true;
+                ping_ready[current_socket] = false;
+                cout << "Client " << current_socket << " connected sucessfully!\n";
+                current_socket++;
+            }
         }
-        cout << "Main running\n";
+//        cout << "Main running\n";
         int fvar;
         for(fvar=1;fvar<current_socket;fvar++){
             if(ok[fvar] == true){
@@ -118,16 +143,37 @@ int main(int argc, char *argv[])
                 FD_SET(new_fd[fvar], &readfds);
                 select(new_fd[fvar]+1,&readfds,NULL,NULL,&tv);
                 if(FD_ISSET(new_fd[fvar],&readfds) && ok[fvar] == true){
-                    if(recv(new_fd[fvar],recievehole,255,0) == 0){
+                    if(recv(new_fd[fvar],recievehole,65535,0) == 0){
                         cout << "Connection closed on client " << fvar << endl;
                         socketclose(new_fd[fvar]);
                         ok[fvar] = false;
                     } else {
-                        if(recievehole != NULL)
-                            cout << recievehole;
+                        if(recievehole != NULL){
+                            char parsed[65535];
+                            memset(parsed,0,65535);
+                            unsigned int number = 0;
+//                            cout << recievehole;
+                            unsigned int number2 = 0;
+                            for(number=0;number != strlen(recievehole) + 1;++number){
+                                if(recievehole[number] != 0 && recievehole[number] != '$')
+                                    parsed[number - number2] = recievehole[number];
+                                else{
+                                    if(parsed[number - number2 - 1] == '\n')
+                                        parsed[number - number2 - 1] = 0;
+                                    if(strncmp(parsed, "KEEPALIVE",9) == 0)
+                                        ping_ready[fvar] = true;
+                                    else
+                                        cout << parsed << endl;
+                                    memset(parsed,0,65535);
+                                    number2 = number + 1;
+                                }
+
+                            }
+
+                        }
                     }
                 }
-                if(ok[fvar] == true){
+/*                if(ok[fvar] == true){
                     FD_ZERO(&readfds);
                     FD_SET(new_fd[fvar], &readfds);
                     select(new_fd[fvar]+1,NULL,&readfds,NULL,&tv);
@@ -136,10 +182,10 @@ int main(int argc, char *argv[])
                             cout << "Send failed to client " << fvar << "\n";
                         }
                     }
-                }
+                }*/
             }
         }
-        sleep(2);
+//        sleep(2);
     }
     return 0;
 }
