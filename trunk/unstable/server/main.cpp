@@ -17,10 +17,15 @@
 using namespace std;
 
 bool ok[1000];
+bool auth[1000];
 bool ping_ready[1000];
 int no_pings[1000];
 int current_socket = 1;
 int new_fd[1000];
+
+char *correct_username = (char*)"test1"; // FIXME: remove
+char *correct_password = (char*)"cheese cake"; // FIXME: remove
+
 
 int sendall(int s, char *buf, int *len)
 {
@@ -38,6 +43,46 @@ int sendall(int s, char *buf, int *len)
     *len = total; // return number actually sent here
 
     return n==-1?-1:0; // return -1 on failure, 0 on success
+}
+
+
+
+void authenticate(int clientnum, char *buf){
+    int take_number = 5;
+    if(buf[strlen(buf)-1] != 13){
+        cout << "Ends in $\n";
+        take_number--;
+    }
+    char *userandpassword = (char *)malloc(strlen(buf)-(take_number-1));
+    strncpy(userandpassword-1,buf+4,strlen(buf)-take_number);
+    char *username = strtok(userandpassword,";");
+    char *password = strtok(NULL,";");
+    if(password[0] == ' '){
+        char *realpassword = (char *)malloc(strlen(password));
+        strncpy(realpassword,password+1,strlen(password)-1);
+        password = realpassword;
+        cout << password << endl;
+    }
+    int len;
+    if(strcmp(username,correct_username) == 0 && strcmp(password,correct_password) == 0){
+        cout << "Client " << clientnum << "'s Authentication as user " << username << " succesful!\n";
+        auth[clientnum] = true;
+        len = strlen("AUTHGOOD$");
+        if(sendall(new_fd[clientnum],(char*)"AUTHGOOD$",&len) == -1){
+            cout << "Send failed";
+            socketclose(new_fd[clientnum]);
+            ok[clientnum] = false;
+        }
+    } else {
+        cout << "Client " << clientnum << "'s Authentication as user " << username << " failed!\n";
+        auth[clientnum] = false;
+        len = strlen("AUTHBAD$");
+        if(sendall(new_fd[clientnum],(char*)"AUTHBAD$",&len) == -1){
+            cout << "Send failed";
+            socketclose(new_fd[clientnum]);
+            ok[clientnum] = false;
+        }
+    }
 }
 
 void *ping(){
@@ -149,7 +194,8 @@ int main(int argc, char *argv[])
                 new_fd[current_socket] = accept(s, (struct sockaddr *)&their_addr, &addr_size);
                 ok[current_socket] = true;
                 ping_ready[current_socket] = false;
-                cout << "Client " << current_socket << " connected sucessfully!\n";
+                auth[current_socket] = false;
+                cout << "Client " << current_socket << " connected sucessfully!\nAwaiting authentication...\n";
                 current_socket++;
             }
         }
@@ -178,10 +224,18 @@ int main(int argc, char *argv[])
                                 else{
                                     if(parsed[number - number2 - 1] == '\n')
                                         parsed[number - number2 - 1] = 0;
-                                    if(strncmp(parsed, "KEEPALIVE",9) == 0)
-                                        ping_ready[fvar] = true;
-                                    else
-                                        cout << parsed << endl;
+                                    // Start code for checking for each function
+                                    if(auth[fvar] == true){
+                                        if(strncmp(parsed, "KEEPALIVE",9) == 0)
+                                            ping_ready[fvar] = true;
+                                        else
+                                            cout << parsed << endl;
+                                    }
+                                    // Authentication is outside the main function if, since otherwise it'd be impossible
+                                    if(strncmp(parsed, "AUTH",4) == 0){
+                                        cout << "Recieved AUTH request from client " << fvar << endl;
+                                        authenticate(fvar,parsed);
+                                    }
                                     memset(parsed,0,65535);
                                     number2 = number + 1;
                                 }
