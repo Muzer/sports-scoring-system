@@ -22,6 +22,24 @@ int no_pings[1000];
 int current_socket = 1;
 int new_fd[1000];
 
+int sendall(int s, char *buf, int *len)
+{
+    int total = 0;        // how many bytes we've sent
+    int bytesleft = *len; // how many we have left to send
+    int n;
+
+    while(total < *len) {
+        n = send(s, buf+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    *len = total; // return number actually sent here
+
+    return n==-1?-1:0; // return -1 on failure, 0 on success
+}
+
 void *ping(){
     while(1){
         int loopvar;
@@ -178,7 +196,7 @@ int main(int argc, char *argv[])
                     FD_SET(new_fd[fvar], &readfds);
                     select(new_fd[fvar]+1,NULL,&readfds,NULL,&tv);
                     if(FD_ISSET(new_fd[fvar],&readfds) && ok[fvar] == true){
-                        if(send(new_fd[fvar],"Main running\n",strlen("Main running\n"),0) < 0){
+                        if(sendall(new_fd[fvar],"Main running\n",strlen("Main running\n"),0) < 0){
                             cout << "Send failed to client " << fvar << "\n";
                         }
                     }
