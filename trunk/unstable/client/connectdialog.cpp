@@ -24,3 +24,18 @@ void ConnectDialog::changeEvent(QEvent *e)
         break;
     }
 }
+
+QString ConnectDialog::getLineEditText()
+{
+    return m_ui->lineEdit->text();
+}
+
+QString ConnectDialog::getLineEdit2Text()
+{
+    return m_ui->lineEdit_2->text();
+}
+
+QString ConnectDialog::getLineEdit3Text()
+{
+    return m_ui->lineEdit_3->text();
+}

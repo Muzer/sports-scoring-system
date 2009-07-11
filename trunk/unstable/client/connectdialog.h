@@ -12,12 +12,14 @@ class ConnectDialog : public QDialog {
 public:
     ConnectDialog(QWidget *parent = 0);
     ~ConnectDialog();
+    QString getLineEditText(), getLineEdit2Text(), getLineEdit3Text();
 
 protected:
     void changeEvent(QEvent *e);
 
 private:
     Ui::ConnectDialog *m_ui;
+
 };
 
 #endif // CONNECTDIALOG_H
