@@ -40,8 +40,28 @@ The server should have an xml file in the same folder of it called config.xml (s
 We want to be able to set up the table via the GUI. This will go something like this:
 
 {{{
-NEWTABLE BWS Sports Day 2009$
+NEWTABLE BWS Sports Day 2009$ // Initialise the table
+}}}
 
+This lets the server know you are going to make a new table. However, since there is only 1 table per user account, we need to make sure that user doesn't already have a table. If there is already a table, the server responds:
+
+TABLEEXISTSREPLACE$
+
+then, the client has to send:
+
+REPLACE$
+
+or
+
+KEEP$
+
+Then, if there wasn't already a table, or if the client replied REPLACE, the server sends:
+
+GOON$
+
+The client then proceeds to sent the table.
+
+{{{
 SETGROUPS 5; Year 7; Year 8; Year 9; Year 10; Year 12$ // 5 groups, names of each group
 
 BEGIN Year 7$ // Begin the year 7 group
