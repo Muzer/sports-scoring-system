@@ -1,0 +1,20 @@
+#summary What we need to do
+
+= Muzer =
+
+  * Administrator - low priority
+  * Decide on rest of protocol - medium priority
+   * Decide on rest of db format - medium priority
+   * Implement all this in server - medium priority
+  * Implement creating a table in server - use vectors (variable size). - high priority
+
+
+= TomMan =
+
+  * Administrator - low priority
+  * Decide on rest of protocol - medium
+   * Decide on rest of db format - medium
+   * Implement all this in client - medium
+  * Implement creating a table into the client - high
+   * Table dialog - eventually to appear on login if you don't have a table
+   * sendToSocket - does some basic checking (length<65535) before sending
