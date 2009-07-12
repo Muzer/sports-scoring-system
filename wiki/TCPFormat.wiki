@@ -31,6 +31,10 @@ The first two are obvious, but the escape character might need a bit of clarific
 
 (Obviously these will be represented by radio boxes, along with "Student competed" in which case it would just send the times as normal, in the client).
 
+
+
+There should be no spaces after semicolons. That was a mistake I made. Just ignore any spaces after semicolons as if they didn't exist.
+
 == Config ==
 
 The server should have an xml file in the same folder of it called config.xml (see ConfigDotXmlExample ), this will hold all the table data (i.e. Events, Competing Years, etc), apart from the records, which are stored in records.xml. Also, the server folder will have at least one database XML file, and this will hold all the tables that were specified in the config.xml (which specifies the filename).  When the server starts, if the database.db and config.xml match then it wont do anything.
@@ -97,16 +101,54 @@ KEEPALIVE$
 
 This makes the server keep the connection open.
 
-
-The same goes with the server to the clients. This could easily be done within the main keepalive thread; no need to make another
-
 == Inputting data ==
 
 Coming soon...
 
 == Requesting the database ==
 
-Coming soon
+The client sends:
+
+REQUESTDB$
+
+The server then sends either:
+
+NOTABLE$
+
+if there is no table for this user account, or
+
+COMMENCEDB$
+
+if there is.
+
+The server then sends:
+
+{{{
+TABLE name;filename.xml$
+GROUPS number;group1;group2;group3;group4 (etc)$
+BEGIN Year 7$ // Begin the year 7 group
+EVENTS 5$ // No. events
+EVENT 100 metre sprint; TIMELOW; 12; 13; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$ // Name, type (TIMELOW (lowest best)/TIMEHIGH (highest best)/DISTANCE/POINTS), number of places, score for each place
+COMPETITOR name;form;time$
+COMPETITOR name;form;time$
+// ...
+EVENTEND 100 metre sprint$
+// ...
+EVENT Javelin; DISTANCE; 12; 13; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
+COMPETITOR name;form;distance$
+// ...
+EVENTEND Javelin$
+EVENT Relay; TIMELOW; 28; 28; 27; 26; 25; 24; 23; 22; 21; 20; 19; 18; 17; 16; 15; 14; 13; 12; 11; 10; 9; 8; 7; 6; 5; 4; 3; 2; 1$
+// No competitors have been entered yet, so it just says:
+EVENTEND Relay;
+END Year 7$
+// And so on
+ENDDATABLOCK$ // Signifies that the command has finished
+}}}
+
+As you can see, it's virtually identica to creating the table, just with added commands for the people.
+
+
 
 == Update ==
 
