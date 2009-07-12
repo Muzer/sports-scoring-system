@@ -18,5 +18,3 @@
    * Decide on rest of db format - medium
    * Implement all this in client - medium
   * Implement creating a table into the client - high
-   * Table dialog - eventually to appear on login if you don't have a table - high
-  * sendToSocket - does some basic checking (length<65535) before sending - high
