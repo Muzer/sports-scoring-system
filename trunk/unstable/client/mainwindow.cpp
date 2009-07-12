@@ -4,14 +4,14 @@
 #include <iostream>
 #include <string>
 
-
 using namespace std;
 
 QString hostname, username, password;
 QTcpSocket socket;
 quint16 port = 8643;
 char socketData[65535];
-
+pthread_t pingthrd,livesthrd;
+int retval = 99, retval2 = 99;
 bool connected = 0;
 
 void keepalive(){
@@ -26,20 +26,18 @@ void keepalive(){
 }
 
 void MainWindow::Disconnected(){
-    QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
+//    QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
     ui->btnConnect->setText("Connect");
     setStatusText("Disconnected from server.");
 }
 
-void makesureserverlives(){
+void makesureserverlives(void *obj){
     while(1){
         if(socket.state() == QAbstractSocket::UnconnectedState && connected == true){
-            // QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-            // Doesn't work
-
             cout << "Error occurred - disconnected.\n";
             socket.disconnectFromHost();
             connected = false;
+            static_cast<MainWindow*>(obj)->Disconnected();
        }
     }
 }
@@ -106,11 +104,9 @@ void MainWindow::btnConnect_clicked()
                         // Start code for checking for each result. Little example
                         if(strncmp(parsed, "AUTHGOOD",8) == 0){
                             QMessageBox::information(0,"Success","Succesfully connected to the server and logged in! ",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-                            pthread_t pingthrd,livesthrd;
-                            int retval,retval2;
                             connected = true;
-                            retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL);
-                            retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,NULL);
+                            if (not retval == 0) { cout << "Starting thread." << endl; retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL); }
+                            if (not retval2 == 0) { cout << "Starting thread." << endl; retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,this); }
                             ui->btnConnect->setText("Disconnect");
                             setStatusText("Connected to server.");
                         }
@@ -144,11 +140,6 @@ void MainWindow::btnAddScore_clicked()
     else { QMessageBox::critical(0,"Error","You are not connected to a server.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton); }
 }
 
-void MainWindow::setStatusText(QString str)
-{
-    ui->lblStatus->setText(str);
-}
+void MainWindow::setStatusText(QString str) { ui->lblStatus->setText(str); }
 
-
-
-
+void MainWindow::setbtnConnectText(QString str) { ui->btnConnect->setText(str); }

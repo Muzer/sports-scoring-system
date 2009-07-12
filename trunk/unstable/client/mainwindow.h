@@ -5,7 +5,6 @@
 #include <QTcpSocket>
 #include <qmessagebox.h>
 
-
 namespace Ui
 {
     class MainWindow;
@@ -19,14 +18,16 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void setStatusText(QString str);
+    void setbtnConnectText(QString str);
 
 private:
     Ui::MainWindow *ui;
 
-
 private slots:
         void btnConnect_clicked();
         void btnAddScore_clicked();
+
+public slots:
         void Disconnected();
 
 };
