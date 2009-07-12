@@ -99,7 +99,7 @@ Coming soon...
 
 (theoretically should be once, and only once, ever, since the database should be carried over to next year). 
 
-Coming soon...
+The server should have an xml file in the same folder of it called config.xml, this will hold all the table data (i.e. Events, Competing Years, Records, etc). Also, the server folder will have a file called database.db and this will hold all the tables that were specified in the config.xml. When the server starts, if the database.db and config.xml match then it wont do anything.
 
 == Busy ==
 Before any data is sent from the client to the server, the client should send:
