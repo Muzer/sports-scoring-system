@@ -93,6 +93,14 @@ NOK$
 
 (and then after the delay whilst the user edits the data, the new set of data).
 
+The server will then edit the config file, and create the skeleton database. It will then return:
+
+CREATED$
+
+or:
+
+CREATEERROR Permission denied$ // for example, it could be anything, like File Exists. It will start with CREATEERROR though.
+
 == Keepalive ==
 
 No matter its state (unless obviously crashed), every minute, the client will send:
