@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'mainwindow.ui'
 **
-** Created: Sat Jul 11 21:56:30 2009
+** Created: Sun Jul 12 14:27:33 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -32,7 +32,7 @@ public:
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
     QPushButton *btnConnect;
-    QPushButton *pushButton;
+    QPushButton *btnAddScore;
     QTabWidget *tabWidget;
     QWidget *tab;
     QWidget *tab_2;
@@ -41,14 +41,14 @@ public:
     QWidget *tab_5;
     QWidget *tab_6;
     QHBoxLayout *horizontalLayout_2;
-    QLabel *label;
+    QLabel *lblStatus;
     QProgressBar *progressBar;
 
     void setupUi(QWidget *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(596, 396);
+        MainWindow->resize(594, 394);
         verticalLayoutWidget = new QWidget(MainWindow);
         verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
         verticalLayoutWidget->setGeometry(QRect(0, 0, 591, 391));
@@ -66,10 +66,10 @@ public:
 
         horizontalLayout->addWidget(btnConnect);
 
-        pushButton = new QPushButton(verticalLayoutWidget);
-        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        btnAddScore = new QPushButton(verticalLayoutWidget);
+        btnAddScore->setObjectName(QString::fromUtf8("btnAddScore"));
 
-        horizontalLayout->addWidget(pushButton);
+        horizontalLayout->addWidget(btnAddScore);
 
 
         verticalLayout->addLayout(horizontalLayout);
@@ -102,15 +102,15 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        label = new QLabel(verticalLayoutWidget);
-        label->setObjectName(QString::fromUtf8("label"));
+        lblStatus = new QLabel(verticalLayoutWidget);
+        lblStatus->setObjectName(QString::fromUtf8("lblStatus"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-        label->setSizePolicy(sizePolicy);
+        sizePolicy.setHeightForWidth(lblStatus->sizePolicy().hasHeightForWidth());
+        lblStatus->setSizePolicy(sizePolicy);
 
-        horizontalLayout_2->addWidget(label);
+        horizontalLayout_2->addWidget(lblStatus);
 
         progressBar = new QProgressBar(verticalLayoutWidget);
         progressBar->setObjectName(QString::fromUtf8("progressBar"));
@@ -130,6 +130,7 @@ public:
 
         retranslateUi(MainWindow);
         QObject::connect(btnConnect, SIGNAL(clicked()), MainWindow, SLOT(btnConnect_clicked()));
+        QObject::connect(btnAddScore, SIGNAL(clicked()), MainWindow, SLOT(btnAddScore_clicked()));
 
         tabWidget->setCurrentIndex(0);
 
@@ -140,15 +141,15 @@ public:
     void retranslateUi(QWidget *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Sports Scoring System - Client", 0, QApplication::UnicodeUTF8));
-        btnConnect->setText(QApplication::translate("MainWindow", "Connect/Disconnect", 0, QApplication::UnicodeUTF8));
-        pushButton->setText(QApplication::translate("MainWindow", "Add Item", 0, QApplication::UnicodeUTF8));
+        btnConnect->setText(QApplication::translate("MainWindow", "Connect", 0, QApplication::UnicodeUTF8));
+        btnAddScore->setText(QApplication::translate("MainWindow", "Add Score", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Year 7", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Year 8", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Year 9", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("MainWindow", "Year 10", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_5), QApplication::translate("MainWindow", "Year 11", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab_6), QApplication::translate("MainWindow", "Year 12", 0, QApplication::UnicodeUTF8));
-        label->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
+        lblStatus->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         Q_UNUSED(MainWindow);
     } // retranslateUi
 

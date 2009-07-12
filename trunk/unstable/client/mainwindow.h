@@ -18,6 +18,7 @@ class MainWindow : public QWidget
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void setStatusText(QString str);
 
 private:
     Ui::MainWindow *ui;
@@ -25,6 +26,7 @@ private:
 
 private slots:
         void btnConnect_clicked();
+        void btnAddScore_clicked();
         void Disconnected();
 
 };

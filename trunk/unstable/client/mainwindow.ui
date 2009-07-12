@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>596</width>
-    <height>396</height>
+    <width>594</width>
+    <height>394</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,14 +31,14 @@
       <item>
        <widget class="QPushButton" name="btnConnect">
         <property name="text">
-         <string>Connect/Disconnect</string>
+         <string>Connect</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btnAddScore">
         <property name="text">
-         <string>Add Item</string>
+         <string>Add Score</string>
         </property>
        </widget>
       </item>
@@ -93,7 +93,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="lblStatus">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -148,8 +148,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btnAddScore</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>btnAddScore_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>16</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>296</x>
+     <y>196</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>btnConnect_clicked()</slot>
+  <slot>btnAddScore_clicked()</slot>
  </slots>
 </ui>
