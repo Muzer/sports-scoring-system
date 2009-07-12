@@ -8,10 +8,13 @@ TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
     connectdialog.cpp \
-    newtabledialog.cpp
+    newtabledialog.cpp \
+    newtablewizard.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
-    newtabledialog.h
+    newtabledialog.h \
+    newtablewizard.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
-    newtabledialog.ui
+    newtabledialog.ui \
+    newtablewizard.ui

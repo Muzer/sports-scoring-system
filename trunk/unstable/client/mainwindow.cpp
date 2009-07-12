@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "connectdialog.h"
 #include "newtabledialog.h"
+#include "newtablewizard.h"
 #include <iostream>
 #include <string>
 
@@ -132,8 +133,13 @@ void MainWindow::btnConnect_clicked()
                     d.raise();
                     if ( d.exec() )
                     {
-                        ui->btnConnect->setText("Disconnect");
-                        setStatusText("Connected to server.");
+                        newtablewizard e;
+                        e.show();
+                        e.activateWindow();
+                        e.raise();
+                        if ( e.exec() ) {
+                            ui->btnConnect->setText("Disconnect");
+                            setStatusText("Connected to server."); }
                     }
                     else { socket.disconnectFromHost(); }
                 }
