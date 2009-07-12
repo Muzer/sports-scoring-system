@@ -22,8 +22,10 @@ public:
 private:
     Ui::MainWindow *ui;
 
+
 private slots:
         void btnConnect_clicked();
+        void Disconnected();
 
 };
 

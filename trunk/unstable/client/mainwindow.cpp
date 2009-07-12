@@ -25,11 +25,17 @@ void keepalive(){
     }
 }
 
+void MainWindow::Disconnected(){
+    QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
+}
+
 void makesureserverlives(){
     while(1){
         if(socket.state() == QAbstractSocket::UnconnectedState && connected == true){
-            QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-            cout << "Error occurred\n";
+            // QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
+            // Doesn't work
+
+            cout << "Error occurred - disconnected.\n";
             socket.disconnectFromHost();
             connected = false;
        }
@@ -97,6 +103,7 @@ void MainWindow::btnConnect_clicked()
                             QMessageBox::information(0,"Success","Succesfully connected to the server and logged in! ",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
                             pthread_t pingthrd,livesthrd;
                             int retval,retval2;
+                            connected = true;
                             retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL);
                             retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,NULL);
                         }
