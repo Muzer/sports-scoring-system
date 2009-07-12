@@ -33,7 +33,7 @@ The first two are obvious, but the escape character might need a bit of clarific
 
 == Config ==
 
-The server should have an xml file in the same folder of it called config.xml, this will hold all the table data (i.e. Events, Competing Years, Records, etc). Also, the server folder will have a file called database.db and this will hold all the tables that were specified in the config.xml. When the server starts, if the database.db and config.xml match then it wont do anything.
+The server should have an xml file in the same folder of it called config.xml (see ConfigDotXmlExample ), this will hold all the table data (i.e. Events, Competing Years, etc), apart from the records, which are stored in records.xml. Also, the server folder will have at least one database XML file, and this will hold all the tables that were specified in the config.xml (which specifies the filename).  When the server starts, if the database.db and config.xml match then it wont do anything.
 
 == Table setup ==
 
