@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "connectdialog.h"
+#include "newtabledialog.h"
 #include <iostream>
 #include <string>
 
@@ -29,6 +30,17 @@ void MainWindow::Disconnected(){
 //    QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
     ui->btnConnect->setText("Connect");
     setStatusText("Disconnected from server.");
+}
+
+bool MainWindow::sendToSocket(const char* text)
+{
+    if(strlen(text) < 65535)
+    {
+        if(socket.write(text) != -1) { return true; }
+        else { return false; }
+        return 1;
+    }
+    return 0;
 }
 
 void makesureserverlives(void *obj){
@@ -80,7 +92,7 @@ void MainWindow::btnConnect_clicked()
                 setStatusText("Failed to connect to server.");
                 return;
             }
-            socket.write(("AUTH " + username.toStdString() + ";" + password.toStdString() + "$\n").c_str());
+            sendToSocket(("AUTH " + username.toStdString() + ";" + password.toStdString() + "$\n").c_str());
 
             memset(socketData,0,65535);
             if(!socket.waitForReadyRead(5000)){
@@ -107,8 +119,18 @@ void MainWindow::btnConnect_clicked()
                             connected = true;
                             if (not retval == 0) { cout << "Starting thread." << endl; retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL); }
                             if (not retval2 == 0) { cout << "Starting thread." << endl; retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,this); }
-                            ui->btnConnect->setText("Disconnect");
-                            setStatusText("Connected to server.");
+                            // sendToSocket("GOTTABLE$")
+                            // socket.readLine(socketData,65535);
+                            NewTableDialog d;
+                            d.show();
+                            d.activateWindow();
+                            d.raise();
+                            if ( d.exec() )
+                            {
+                                ui->btnConnect->setText("Disconnect");
+                                setStatusText("Connected to server.");
+                            }
+                            else { socket.disconnectFromHost(); }
                         }
                         if(strncmp(parsed, "AUTHBAD",7) == 0){
                             QMessageBox::critical(0,"Error","Failed to authenticate. Is your username and password correct?",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
@@ -121,7 +143,6 @@ void MainWindow::btnConnect_clicked()
 
                 }
             }
-            socket.write("hi");
         }
     } else {
         socket.disconnectFromHost();

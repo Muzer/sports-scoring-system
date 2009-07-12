@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ConnectDialog</class>
- <widget class="QDialog" name="ConnectDialog">
+ <class>NewTableDialog</class>
+ <widget class="QDialog" name="NewTableDialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>145</height>
+    <width>398</width>
+    <height>117</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Connection Setup</string>
+   <string>Create a new table</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -20,7 +23,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>111</y>
+     <y>80</y>
      <width>381</width>
      <height>31</height>
     </rect>
@@ -29,23 +32,23 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Ok</set>
    </property>
   </widget>
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>9</x>
-     <y>9</y>
+     <x>10</x>
+     <y>10</y>
      <width>381</width>
-     <height>91</height>
+     <height>61</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Host Address:</string>
+       <string>Table Name:</string>
       </property>
      </widget>
     </item>
@@ -55,26 +58,12 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Username:</string>
+       <string>Filename:</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
      <widget class="QLineEdit" name="lineEdit_2"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Password:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit_3">
-      <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>
@@ -84,7 +73,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>ConnectDialog</receiver>
+   <receiver>NewTableDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -100,7 +89,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>ConnectDialog</receiver>
+   <receiver>NewTableDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

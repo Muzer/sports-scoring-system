@@ -7,8 +7,11 @@ TARGET = client
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    connectdialog.cpp
+    connectdialog.cpp \
+    newtabledialog.cpp
 HEADERS += mainwindow.h \
-    connectdialog.h
+    connectdialog.h \
+    newtabledialog.h
 FORMS += mainwindow.ui \
-    connectdialog.ui
+    connectdialog.ui \
+    newtabledialog.ui

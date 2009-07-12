@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'connectdialog.ui'
 **
-** Created: Sat Jul 11 16:10:49 2009
+** Created: Sun Jul 12 17:46:09 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -41,15 +41,16 @@ public:
     {
         if (ConnectDialog->objectName().isEmpty())
             ConnectDialog->setObjectName(QString::fromUtf8("ConnectDialog"));
-        ConnectDialog->resize(398, 298);
+        ConnectDialog->resize(396, 145);
+        ConnectDialog->setModal(true);
         buttonBox = new QDialogButtonBox(ConnectDialog);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
-        buttonBox->setGeometry(QRect(50, 260, 341, 32));
+        buttonBox->setGeometry(QRect(10, 111, 381, 31));
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
         formLayoutWidget = new QWidget(ConnectDialog);
         formLayoutWidget->setObjectName(QString::fromUtf8("formLayoutWidget"));
-        formLayoutWidget->setGeometry(QRect(9, 9, 381, 241));
+        formLayoutWidget->setGeometry(QRect(9, 9, 381, 91));
         formLayout = new QFormLayout(formLayoutWidget);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         formLayout->setContentsMargins(0, 0, 0, 0);
@@ -94,7 +95,7 @@ public:
 
     void retranslateUi(QDialog *ConnectDialog)
     {
-        ConnectDialog->setWindowTitle(QApplication::translate("ConnectDialog", "Dialog", 0, QApplication::UnicodeUTF8));
+        ConnectDialog->setWindowTitle(QApplication::translate("ConnectDialog", "Connection Setup", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("ConnectDialog", "Host Address:", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("ConnectDialog", "Username:", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("ConnectDialog", "Password:", 0, QApplication::UnicodeUTF8));

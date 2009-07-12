@@ -19,6 +19,7 @@ public:
     ~MainWindow();
     void setStatusText(QString str);
     void setbtnConnectText(QString str);
+    bool sendToSocket(const char* str);
 
 private:
     Ui::MainWindow *ui;
