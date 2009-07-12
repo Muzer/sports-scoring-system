@@ -15,6 +15,10 @@ pthread_t pingthrd,livesthrd;
 int retval = 99, retval2 = 99;
 bool connected = 0;
 
+char parsed[65535];
+unsigned int number = 0;
+unsigned int number2 = 0;
+
 void keepalive(){
     while(1){
         cout << "Running thread\n";
@@ -43,6 +47,25 @@ bool MainWindow::sendToSocket(const char* text)
     return 0;
 }
 
+bool MainWindow::readFromSocket()
+{
+    socket.readLine(socketData,65535);
+    if(socketData != NULL){
+        memset(parsed,0,65535);
+        for(number=0;number != strlen(socketData) + 1;++number){
+            if(socketData[number] != 0 && socketData[number] != '$')
+                parsed[number - number2] = socketData[number];
+            else
+            {
+                if(parsed[number - number2 - 1] == '\n')
+                    parsed[number - number2 - 1] = 0;
+            }
+
+        }
+    }
+    return true;
+}
+
 void makesureserverlives(void *obj){
     while(1){
         if(socket.state() == QAbstractSocket::UnconnectedState && connected == true){
@@ -57,14 +80,6 @@ void makesureserverlives(void *obj){
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-//    while(1){
-//        if(socket.state() == QAbstractSocket::UnconnectedState && connected == true){
-//            QMessageBox::critical(0,"Error", "Disconnected from the server. Possible causes: The server was killed, the server crashed, the keepalive thread crashed and we timed out.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-//            socket.disconnectFromHost();
-//            connected = false;
-//            ui->btnConnect.setText("Connect");
-//       }
-//    }
 }
 
 MainWindow::~MainWindow()
@@ -92,6 +107,7 @@ void MainWindow::btnConnect_clicked()
                 setStatusText("Failed to connect to server.");
                 return;
             }
+
             sendToSocket(("AUTH " + username.toStdString() + ";" + password.toStdString() + "$\n").c_str());
 
             memset(socketData,0,65535);
@@ -101,47 +117,36 @@ void MainWindow::btnConnect_clicked()
                 setStatusText("Did not recieve data from server.");
                 return;
             }
-            socket.readLine(socketData,65535);
-            if(socketData != NULL){
-                char parsed[65535];
-                memset(parsed,0,65535);
-                unsigned int number = 0;
-                unsigned int number2 = 0;
-                for(number=0;number != strlen(socketData) + 1;++number){
-                    if(socketData[number] != 0 && socketData[number] != '$')
-                        parsed[number - number2] = socketData[number];
-                    else{
-                        if(parsed[number - number2 - 1] == '\n')
-                            parsed[number - number2 - 1] = 0;
-                        // Start code for checking for each result. Little example
-                        if(strncmp(parsed, "AUTHGOOD",8) == 0){
-                            QMessageBox::information(0,"Success","Succesfully connected to the server and logged in! ",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-                            connected = true;
-                            if (not retval == 0) { cout << "Starting thread." << endl; retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL); }
-                            if (not retval2 == 0) { cout << "Starting thread." << endl; retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,this); }
-                            // sendToSocket("GOTTABLE$")
-                            // socket.readLine(socketData,65535);
-                            NewTableDialog d;
-                            d.show();
-                            d.activateWindow();
-                            d.raise();
-                            if ( d.exec() )
-                            {
-                                ui->btnConnect->setText("Disconnect");
-                                setStatusText("Connected to server.");
-                            }
-                            else { socket.disconnectFromHost(); }
-                        }
-                        if(strncmp(parsed, "AUTHBAD",7) == 0){
-                            QMessageBox::critical(0,"Error","Failed to authenticate. Is your username and password correct?",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
-                            socket.disconnectFromHost();
-                        }
-                        // End of code for checking for each result
-                        memset(parsed,0,65535);
-                        number2 = number + 1;
+            readFromSocket();
+            if(strncmp(parsed, "AUTHGOOD",8) == 0){
+                QMessageBox::information(0,"Success","Succesfully connected to the server and logged in! ",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
+                connected = true;
+                if (not retval == 0) { cout << "Starting thread." << endl; retval = pthread_create((pthread_t*)&pingthrd,NULL,(void* (*)(void*))keepalive,NULL); }
+                if (not retval2 == 0) { cout << "Starting thread." << endl; retval2 = pthread_create((pthread_t*)&livesthrd,NULL,(void* (*)(void*))makesureserverlives,this); }
+                sendToSocket("REQUESTDB$");
+                readFromSocket();
+                if(strncmp(parsed, "NOTABLE",7) == 0){
+                    NewTableDialog d;
+                    d.show();
+                    d.activateWindow();
+                    d.raise();
+                    if ( d.exec() )
+                    {
+                        ui->btnConnect->setText("Disconnect");
+                        setStatusText("Connected to server.");
                     }
-
+                    else { socket.disconnectFromHost(); }
                 }
+                else if(strncmp(parsed, "COMMENCEDB",7) == 0){
+                    ui->btnConnect->setText("Disconnect");
+                    setStatusText("Connected to server.");
+                }
+                else { QMessageBox::critical(0,"Error","Failed to get table data from server.",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton); socket.disconnectFromHost(); }
+                memset(parsed,0,65535);
+                number2 = number + 1; }
+            if(strncmp(parsed, "AUTHBAD",7) == 0){
+                QMessageBox::critical(0,"Error","Failed to authenticate. Is your username and password correct?",QMessageBox::Ok | QMessageBox::Default,QMessageBox::NoButton,QMessageBox::NoButton);
+                socket.disconnectFromHost();
             }
         }
     } else {

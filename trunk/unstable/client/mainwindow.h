@@ -20,6 +20,7 @@ public:
     void setStatusText(QString str);
     void setbtnConnectText(QString str);
     bool sendToSocket(const char* str);
+    bool readFromSocket();
 
 private:
     Ui::MainWindow *ui;
