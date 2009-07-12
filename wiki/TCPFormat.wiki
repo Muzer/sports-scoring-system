@@ -39,8 +39,10 @@ The server should have an xml file in the same folder of it called config.xml (s
 
 We want to be able to set up the table via the GUI. This will go something like this:
 
+NEWTABLE name;filename$
+
 {{{
-NEWTABLE BWS Sports Day 2009$ // Initialise the table
+NEWTABLE BWS Sports Day 2009;bwssportsday2009.xml$ // Initialise the table
 }}}
 
 This lets the server know you are going to make a new table. However, since there is only 1 table per user account, we need to make sure that user doesn't already have a table. If there is already a table, the server responds:
