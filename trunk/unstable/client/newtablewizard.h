@@ -21,6 +21,8 @@ private:
 
 private slots:
     void changeNoListItems(int a);
+    void addItem();
+    void remItem();
 
 };
 

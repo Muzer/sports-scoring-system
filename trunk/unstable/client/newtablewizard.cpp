@@ -13,25 +13,13 @@ newtablewizard::~newtablewizard()
     delete m_ui;
 }
 
-void newtablewizard::changeNoListItems(int a)
+void newtablewizard::addItem()
 {
-    int b, d, i;
-    b = m_ui->listWidget->count();
-    if (not a == b) {
-        d = a - b;
-        if(d < 0){
-            d = 0 - d;
-            for(i=0;i!=d;++i){
-                m_ui->listWidget->removeItemWidget(m_ui->listWidget->currentItem());
-            }
-        }
-        else if(d > 0){
-            for(i=0;i!=d;++i){
-                m_ui->listWidget->addItem("New Group");
-            }
-        }
-
-    }
+    m_ui->listWidget->addItem(m_ui->lineEdit->text());
+}
+void newtablewizard::remItem()
+{
+    m_ui->listWidget->removeItemWidget(m_ui->listWidget->selectedItems()[0]);
 }
 
 void newtablewizard::changeEvent(QEvent *e)

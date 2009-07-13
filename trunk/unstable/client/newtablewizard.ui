@@ -43,39 +43,16 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>10</y>
       <width>391</width>
       <height>331</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Number of Groups:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QSpinBox" name="spinBox">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="suffix">
-        <string> Groups</string>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="value">
-        <number>1</number>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Group Names:</string>
@@ -83,7 +60,32 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QListWidget" name="listWidget"/>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnAdd">
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnRem">
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
+      <widget class="QListWidget" name="listWidget">
+       <property name="editTriggers">
+        <set>QAbstractItemView::AllEditTriggers</set>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -92,14 +94,30 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections>
   <connection>
-   <sender>spinBox</sender>
-   <signal>valueChanged(int)</signal>
+   <sender>btnAdd</sender>
+   <signal>clicked()</signal>
    <receiver>newtablewizard</receiver>
-   <slot>changeNoListItems(int)</slot>
+   <slot>addItem()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>165</x>
-     <y>12</y>
+     <x>280</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnRem</sender>
+   <signal>clicked()</signal>
+   <receiver>newtablewizard</receiver>
+   <slot>remItem()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>352</x>
+     <y>224</y>
     </hint>
     <hint type="destinationlabel">
      <x>198</x>
@@ -109,6 +127,7 @@ p, li { white-space: pre-wrap; }
   </connection>
  </connections>
  <slots>
-  <slot>changeNoListItems(int)</slot>
+  <slot>addItem()</slot>
+  <slot>remItem()</slot>
  </slots>
 </ui>
