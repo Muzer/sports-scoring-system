@@ -51,7 +51,9 @@ NEWTABLE BWS Sports Day 2009;bwssportsday2009.xml$ // Initialise the table
 
 This lets the server know you are going to make a new table. However, since there is only 1 table per user account, we need to make sure that user doesn't already have a table. If there is already a table, the server responds:
 
-TABLEEXISTSREPLACE$
+TABLEEXISTSREPLACE name$
+
+(Where name is the name of the table that already exists)
 
 then, the client has to send:
 
