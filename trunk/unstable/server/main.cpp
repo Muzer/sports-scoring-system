@@ -145,15 +145,12 @@ void set_up_table(int clientnum, char *buf, bool done_replace){ // TODO: Change 
     int len = strlen("GOON$");
     sendall(all_clients[clientnum].new_fd,(char*)"GOON$",&len);
     char receivehole[65535];
-    struct timeval tv;
-    fd_set readfds;
-    tv.tv_sec = 0;
-    tv.tv_usec = 0;
     memset(receivehole,0,65535);
-    FD_ZERO(&readfds);
-    FD_SET(all_clients[clientnum].new_fd, &readfds);
-    select(all_clients[clientnum].new_fd+1, &readfds, NULL, NULL, &tv);
-    if (FD_ISSET(all_clients[clientnum].new_fd, &readfds)){
+    if(recv(all_clients[clientnum].new_fd,receivehole,65535,0) == 0){
+        cout << "Connection closed on client " << clientnum << endl;
+        socketclose(all_clients[clientnum].new_fd);
+        all_clients[clientnum].ok = false;
+    } else {
         if(receivehole != NULL){
             char parsed[65535];
             memset(parsed,0,65535);
@@ -226,7 +223,7 @@ void authenticate(int clientnum, char *buf){
         all_clients[clientnum].auth = true;
         len = strlen("AUTHGOOD$");
         all_clients[clientnum].username = username;
-        all_clients[current_socket].this_user = &all_users[0];
+        all_clients[clientnum].this_user = &all_users[0];
         read_database(clientnum);
         if(sendall(all_clients[clientnum].new_fd,(char*)"AUTHGOOD$",&len) == -1){
             cout << "Send failed";
