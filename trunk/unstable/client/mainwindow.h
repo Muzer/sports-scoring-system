@@ -19,6 +19,7 @@ public:
     ~MainWindow();
     void setStatusText(QString str);
     void setbtnConnectText(QString str);
+    void setProgressValue(int i);
     bool sendToSocket(const char* str);
     bool readFromSocket();
 

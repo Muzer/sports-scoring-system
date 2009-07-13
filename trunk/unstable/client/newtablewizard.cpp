@@ -1,5 +1,6 @@
 #include "newtablewizard.h"
 #include "ui_newtablewizard.h"
+#include <iostream>
 
 newtablewizard::newtablewizard(QWidget *parent) :
     QWizard(parent),
@@ -17,9 +18,11 @@ void newtablewizard::addItem()
 {
     m_ui->listWidget->addItem(m_ui->lineEdit->text());
 }
+
 void newtablewizard::remItem()
 {
-    m_ui->listWidget->removeItemWidget(m_ui->listWidget->selectedItems()[0]);
+    std::cout << "hi\n";
+    m_ui->listWidget->removeItemWidget(m_ui->listWidget->item(m_ui->listWidget->currentRow()));
 }
 
 void newtablewizard::changeEvent(QEvent *e)

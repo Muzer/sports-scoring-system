@@ -20,7 +20,6 @@ private:
     Ui::newtablewizard *m_ui;
 
 private slots:
-    void changeNoListItems(int a);
     void addItem();
     void remItem();
 
