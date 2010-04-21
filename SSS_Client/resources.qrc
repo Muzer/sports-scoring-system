@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/network-connect.png</file>
+        <file>data/network-disconnect.png</file>
+        <file>data/archive-insert.png</file>
+        <file>data/archive-remove.png</file>
+        <file>data/list-add.png</file>
+        <file>data/go-down.png</file>
+        <file>data/go-up.png</file>
+        <file>data/list-remove.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sports Scoring System</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QTreeView" name="treeView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>601</width>
+      <height>341</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>600</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionConnect"/>
+    <addaction name="actionDisconnect"/>
+   </widget>
+   <widget class="QMenu" name="menuActions">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <addaction name="actionAdd_Table"/>
+    <addaction name="actionRemove_Table"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuActions"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionConnect">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/data/network-connect.png</normaloff>:/data/network-connect.png</iconset>
+   </property>
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionDisconnect">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/data/network-disconnect.png</normaloff>:/data/network-disconnect.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionAdd_Table">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/data/archive-insert.png</normaloff>:/data/archive-insert.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Event</string>
+   </property>
+  </action>
+  <action name="actionRemove_Table">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/data/archive-remove.png</normaloff>:/data/archive-remove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove Event</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
