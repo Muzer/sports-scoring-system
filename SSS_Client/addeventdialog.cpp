@@ -27,6 +27,21 @@ AddEventDialog::~AddEventDialog()
     delete ui;
 }
 
+QString AddEventDialog::getYeargroup()
+{
+	return ui->comboBox->currentText();
+}
+
+QString AddEventDialog::getEventName()
+{
+	return ui->lineEdit->text();
+}
+
+QString AddEventDialog::getModelText(int row, int column)
+{
+	return model->item(row, column)->text();
+}
+
 void AddEventDialog::changeEvent(QEvent *e)
 {
     QDialog::changeEvent(e);
@@ -41,7 +56,7 @@ void AddEventDialog::changeEvent(QEvent *e)
 
 void AddEventDialog::addSection()
 {
-	model->appendRow(QList<QStandardItem *>() << new QStandardItem("Event") << new QStandardItem("Type"));
+	model->appendRow(QList<QStandardItem *>() << new QStandardItem("Section") << new QStandardItem("TEXT"));
 }
 
 void AddEventDialog::removeSection()
@@ -91,4 +106,25 @@ void AddEventDialog::moveDown()
 
 		ui->treeView->setCurrentIndex(model->index(i + 1, 0));
 	}
+}
+
+void AddEventDialog::ok()
+{
+	bool error = false;
+	for (int i = 0; i < model->rowCount(); i++)
+	{
+		if (!error)
+		{
+			if (model->item(i, 1)->text() != "TEXT" && model->item(i, 1)->text() != "TIME")
+			{
+				stringstream ss;
+				ss << "The Type on row " <<( i + 1) << " is incorrent. It should be either TEXT or TIME.";
+				QMessageBox::critical(this, "Incorrect Type", ss.str().c_str());
+				error = true;
+			}
+		}
+	}
+
+	if (!error)
+		emit accept();
 }
