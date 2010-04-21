@@ -35,6 +35,8 @@ private:
 
 private slots:
 	void newConnection();
+	void addedEvent(QString yeargroup, QString event);
+	void removedEvent(QString name);
 };
 
 #endif // SERVER_H

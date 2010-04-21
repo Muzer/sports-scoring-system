@@ -25,6 +25,8 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+	void writeNewEvent(QString yeargroup, QString eventname, AddEventDialog *dialog);
+
 protected:
     void changeEvent(QEvent *e);
 	void resizeEvent(QResizeEvent *event);

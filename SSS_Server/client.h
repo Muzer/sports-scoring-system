@@ -6,6 +6,8 @@
 #include <QTcpSocket>
 #include <QStringList>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <iostream>
 #include <sstream>
 
@@ -17,6 +19,8 @@ class Client : public QObject
 public:
 	Client(int i, QTcpSocket *socket, QSqlDatabase *db, QString n, QString username, QString password, QString years);
 	~Client();
+	void writeEvent(QString yeargroup, QString event);
+	void writeRemoveEvent(QString name);
 
 private:
 	QTcpSocket *tcpSocket;
@@ -28,6 +32,10 @@ private:
 	QString yeargroups;
 
 	QSqlDatabase *database;
+
+signals:
+	void addedEvent(QString yeargroup, QString event);
+	void removedEvent(QString name);
 
 private slots:
 	void disconnected();

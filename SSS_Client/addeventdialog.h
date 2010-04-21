@@ -23,6 +23,7 @@ public:
 	QString getYeargroup();
 	QString getEventName();
 	QString getModelText(int row, int column);
+	int rows();
 
 protected:
     void changeEvent(QEvent *e);
