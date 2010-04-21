@@ -120,6 +120,24 @@ void Server::newConnection()
 		printColour(":: New Connection...", "blue");
 		QTcpSocket *socket = tcpServer->nextPendingConnection();
 		Client *client = new Client(clients.count(), socket, &database, name, username, password, yeargroups);
+		connect(client, SIGNAL(addedEvent(QString,QString)), this, SLOT(addedEvent(QString,QString)));
+		connect(client, SIGNAL(removedEvent(QString)), this, SLOT(removedEvent(QString)));
 		clients.append(client);
+	}
+}
+
+void Server::addedEvent(QString yeargroup, QString event)
+{
+	for (int i = 0; i < clients.count(); i++)
+	{
+		clients[i]->writeEvent(yeargroup, event);
+	}
+}
+
+void Server::removedEvent(QString name)
+{
+	for (int i = 0; i < clients.count(); i++)
+	{
+		clients[i]->writeRemoveEvent(name);
 	}
 }

@@ -13,6 +13,9 @@ AddEventDialog::AddEventDialog(QWidget *parent, QStringList yeargroups) :
 	connect(ui->btnDown, SIGNAL(clicked()), this, SLOT(moveDown()));
 
 	model = new QStandardItemModel(this);
+	model->setColumnCount(2);
+	model->setHorizontalHeaderLabels(QStringList() << "Name" << "Type");
+
 	ui->treeView->setModel(model);
 
 	for (int i = 0; i < yeargroups.count(); i++)
@@ -40,6 +43,11 @@ QString AddEventDialog::getEventName()
 QString AddEventDialog::getModelText(int row, int column)
 {
 	return model->item(row, column)->text();
+}
+
+int AddEventDialog::rows()
+{
+	return model->rowCount();
 }
 
 void AddEventDialog::changeEvent(QEvent *e)
@@ -111,6 +119,21 @@ void AddEventDialog::moveDown()
 void AddEventDialog::ok()
 {
 	bool error = false;
+	if (model->rowCount() <= 0)
+	{
+		QMessageBox::critical(this, "No Sections", "There are currently no sections.");
+		error = true;
+	}
+
+	if (!error)
+	{
+		if (ui->lineEdit->text().isEmpty())
+		{
+			QMessageBox::critical(this, "No Event Name", "The Event Name is empty.");
+			error = true;
+		}
+	}
+
 	for (int i = 0; i < model->rowCount(); i++)
 	{
 		if (!error)

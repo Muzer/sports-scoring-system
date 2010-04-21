@@ -56,13 +56,35 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	model = new QStandardItemModel(this);
 	model->setColumnCount(2);
-	model->setHorizontalHeaderLabels(QStringList() << "Year" << "Name");
+	model->setHorizontalHeaderLabels(QStringList() << "Year" << "Event");
 	ui->treeView->setModel(model);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::writeNewEvent(QString yeargroup, QString eventname, AddEventDialog *dialog)
+{
+	socket->write("ADDEVENT ");
+	socket->write(yeargroup.toStdString().c_str());
+	socket->write(";");
+	socket->write(eventname.toStdString().c_str());
+	socket->write(";");
+
+	for (int i = 0; i < dialog->rows(); i++)
+	{
+		socket->write(dialog->getModelText(i, 0).toStdString().c_str());
+		socket->write("|");
+		socket->write(dialog->getModelText(i, 1).toStdString().c_str());
+		if (i < dialog->rows() - 1)
+		{
+			socket->write(",");
+		}
+	}
+
+	socket->write("\n");
 }
 
 void MainWindow::changeEvent(QEvent *e)
@@ -100,6 +122,8 @@ void MainWindow::showConnectDialog()
 		ui->actionDisconnect->setEnabled(true);
 		ui->menuActions->setEnabled(true);
 	}
+
+	delete dialog;
 }
 
 void MainWindow::addEvent()
@@ -107,13 +131,41 @@ void MainWindow::addEvent()
 	AddEventDialog *dialog = new AddEventDialog(0, yeargroups);
 	if (dialog->exec() == QDialog::Accepted)
 	{
+		QString yeargroup = dialog->getYeargroup();
+		QString eventname = dialog->getEventName();
 
+		if (yeargroup.startsWith("All"))
+		{
+			for (int i = 0; i < yeargroups.count(); i++)
+			{
+				writeNewEvent(yeargroups[i], eventname, dialog);
+			}
+		}
+		else
+		{
+			writeNewEvent(yeargroup, eventname, dialog);
+		}
 	}
+
+	delete dialog;
 }
 
 void MainWindow::removeEvent()
 {
-
+	int i = ui->treeView->currentIndex().row();
+	if (i >= 0)
+	{
+		if (QMessageBox::question(this, "Are you sure?", "Are you sure you want to delete this event. This action is permenant and all data will be lost.", QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes)
+		{
+			QString name = model->item(i, 0)->text().replace(" ", "_");
+			name = name.append("|");
+			name = name.append(model->item(i, 1)->text().replace(" ", "_"));
+			socket->write("REMOVEEVENT ");
+			socket->write(name.toStdString().c_str());
+			socket->write("\n");
+			socket->flush();
+		}
+	}
 }
 
 void MainWindow::disconnect()
@@ -126,6 +178,9 @@ void MainWindow::disconnect()
 	ui->actionConnect->setEnabled(true);
 	ui->actionDisconnect->setEnabled(false);
 	ui->menuActions->setEnabled(false);
+
+	model->clear();
+	model->setHorizontalHeaderLabels(QStringList() << "Year" << "Event");
 
 	socket->disconnectFromHost();
 	setWindowTitle(QString("Sports Scoring System"));
@@ -148,8 +203,9 @@ void MainWindow::readyRead()
 	{
 		QByteArray data = socket->readLine(65563);
 		QString string = data.data();
+		string = string.trimmed();
 
-		if (string == "AUTHBAD\n")
+		if (string == "AUTHBAD")
 		{
 			disconnect();
 			QMessageBox::critical(this, "Wrong Username or Password", "Either the username or password you entered was wrong.");
@@ -158,7 +214,6 @@ void MainWindow::readyRead()
 		else if (string.startsWith("AUTHGOOD"))
 		{
 			QString name = string.remove(0, 9);
-			name.remove("\n");
 
 			setWindowTitle(QString("Sports Scoring System - ") + name);
 
@@ -170,15 +225,14 @@ void MainWindow::readyRead()
 		else if (string.startsWith("YEARGROUPS"))
 		{
 			QString temp = string.remove(0, 11);
-			temp = temp.trimmed();
 			yeargroups = temp.split(",");
 			progressDialog->setText("Getting year groups...");
 			progressDialog->setValue(2);
 		}
-		else if (string == "CLEAREVENTLIST\n")
+		else if (string == "CLEAREVENTLIST")
 		{
 			model->clear();
-			model->setHorizontalHeaderLabels(QStringList() << "Year" << "Name");
+			model->setHorizontalHeaderLabels(QStringList() << "Year" << "Event");
 			progressDialog->setText("Clearing Event List...");
 			progressDialog->setValue(4);
 		}
@@ -188,13 +242,36 @@ void MainWindow::readyRead()
 			QStringList lists = temp.split(";");
 			QString year = lists[0];
 			QString event = lists[1];
-			event = event.remove("\n");
 			model->appendRow(QList<QStandardItem *>() << new QStandardItem(year) << new QStandardItem(event));
 
 			progressDialog->setText("Adding events...");
 			progressDialog->setValue(10);
 		}
-		else if (string == "DONELOADING\n")
+		else if (string.startsWith("REMOVEEVENT"))
+		{
+			QString name = string.remove(0, 12);
+			QString name1 = name.split("|")[0];
+			name1 = name1.replace("_", " ");
+			QString name2 = name.split("|")[1];
+			name2 = name2.replace("_", " ");
+
+			for (int i = model->rowCount() - 1; i >= 0; i--)
+			{
+				if (model->item(i, 0)->text() == name1)
+				{
+					if (model->item(i, 1)->text() == name2)
+					{
+						model->removeRow(i);
+					}
+				}
+			}
+		}
+		else if (string.startsWith("ERROR"))
+		{
+			QString message = string.remove(0, 6);
+			QMessageBox::critical(this, "Error", message);
+		}
+		else if (string == "DONELOADING")
 		{
 			progressDialog->setValue(100);
 			progressDialog->setText("Complete!");
