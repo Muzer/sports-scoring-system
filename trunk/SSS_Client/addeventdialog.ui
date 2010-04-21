@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
+    <width>280</width>
     <height>320</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>240</width>
+    <width>280</width>
     <height>320</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>240</width>
+    <width>280</width>
     <height>320</height>
    </size>
   </property>
@@ -28,7 +28,7 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>40</x>
      <y>280</y>
      <width>221</width>
      <height>31</height>
@@ -46,8 +46,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>221</width>
-     <height>231</height>
+     <width>241</width>
+     <height>211</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -90,8 +90,8 @@
   <widget class="QPushButton" name="btnRemove">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>250</y>
+     <x>220</x>
+     <y>230</y>
      <width>31</width>
      <height>24</height>
     </rect>
@@ -107,8 +107,8 @@
   <widget class="QPushButton" name="btnAdd">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>250</y>
+     <x>190</x>
+     <y>230</y>
      <width>31</width>
      <height>24</height>
     </rect>
@@ -124,8 +124,8 @@
   <widget class="QPushButton" name="btnUp">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>250</y>
+     <x>160</x>
+     <y>230</y>
      <width>31</width>
      <height>24</height>
     </rect>
@@ -141,8 +141,8 @@
   <widget class="QPushButton" name="btnDown">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>250</y>
+     <x>130</x>
+     <y>230</y>
      <width>31</width>
      <height>24</height>
     </rect>
@@ -155,6 +155,25 @@
      <normaloff>:/data/go-down.png</normaloff>:/data/go-down.png</iconset>
    </property>
   </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>260</y>
+     <width>241</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel
+{
+	font: italic;
+}</string>
+   </property>
+   <property name="text">
+    <string>Type has to be either TIME or TEXT</string>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="resources.qrc"/>
@@ -164,7 +183,7 @@
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>AddEventDialog</receiver>
-   <slot>accept()</slot>
+   <slot>ok()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
@@ -193,4 +212,7 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>ok()</slot>
+ </slots>
 </ui>

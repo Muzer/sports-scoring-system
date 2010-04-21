@@ -5,6 +5,8 @@
 #include <QStringList>
 #include <QStandardItemModel>
 #include <iostream>
+#include <QMessageBox>
+#include <sstream>
 
 using namespace std;
 
@@ -18,6 +20,10 @@ public:
 	AddEventDialog(QWidget *parent, QStringList yeargroups);
     ~AddEventDialog();
 
+	QString getYeargroup();
+	QString getEventName();
+	QString getModelText(int row, int column);
+
 protected:
     void changeEvent(QEvent *e);
 
@@ -30,6 +36,8 @@ private slots:
 	void removeSection();
 	void moveUp();
 	void moveDown();
+
+	void ok();
 };
 
 #endif // ADDEVENTDIALOG_H

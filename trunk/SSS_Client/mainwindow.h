@@ -11,6 +11,7 @@
 
 #include "connectdialog.h"
 #include "addeventdialog.h"
+#include "progressdialog.h"
 
 using namespace std;
 
@@ -42,6 +43,8 @@ private:
 	QStringList yeargroups;
 
 	QStandardItemModel *model;
+
+	ProgressDialog *progressDialog;
 
 private slots:
 	void showConnectDialog();

@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 	ui->mainToolBar->setMovable(false);
 
+	progressDialog = new ProgressDialog(0);
+
 	connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(showConnectDialog()));
 	connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnect()));
 	connect(ui->actionAdd_Table, SIGNAL(triggered()), this, SLOT(addEvent()));
@@ -142,45 +144,62 @@ void MainWindow::connected()
 
 void MainWindow::readyRead()
 {
-	QByteArray data = socket->readLine(65563);
-	QString string = data.data();
+	while (socket->canReadLine())
+	{
+		QByteArray data = socket->readLine(65563);
+		QString string = data.data();
 
-	cout << string.toStdString() << endl;
+		if (string == "AUTHBAD\n")
+		{
+			disconnect();
+			QMessageBox::critical(this, "Wrong Username or Password", "Either the username or password you entered was wrong.");
+			showConnectDialog();
+		}
+		else if (string.startsWith("AUTHGOOD"))
+		{
+			QString name = string.remove(0, 9);
+			name.remove("\n");
 
-	if (string == "AUTHBAD\n")
-	{
-		disconnect();
-		QMessageBox::critical(this, "Wrong Username or Password", "Either the username or password you entered was wrong.");
-		showConnectDialog();
-	}
-	else if (string.startsWith("AUTHGOOD"))
-	{
-		QString name = string.remove(0, 9);
-		name.remove("\n");
+			setWindowTitle(QString("Sports Scoring System - ") + name);
 
-		setWindowTitle(QString("Sports Scoring System - ") + name);
+			socket->write("AUTHDONE\n");
+			progressDialog->setValue(0);
+			progressDialog->setText("Loading current SSS status...");
+			progressDialog->show();
+		}
+		else if (string.startsWith("YEARGROUPS"))
+		{
+			QString temp = string.remove(0, 11);
+			temp = temp.trimmed();
+			yeargroups = temp.split(",");
+			progressDialog->setText("Getting year groups...");
+			progressDialog->setValue(2);
+		}
+		else if (string == "CLEAREVENTLIST\n")
+		{
+			model->clear();
+			model->setHorizontalHeaderLabels(QStringList() << "Year" << "Name");
+			progressDialog->setText("Clearing Event List...");
+			progressDialog->setValue(4);
+		}
+		else if (string.startsWith("ADDEVENT"))
+		{
+			QString temp = string.remove(0, 9);
+			QStringList lists = temp.split(";");
+			QString year = lists[0];
+			QString event = lists[1];
+			event = event.remove("\n");
+			model->appendRow(QList<QStandardItem *>() << new QStandardItem(year) << new QStandardItem(event));
 
-		socket->write("AUTHDONE\n");
-	}
-	else if (string.startsWith("YEARGROUPS"))
-	{
-		QString temp = string.remove(0, 11);
-		temp = temp.trimmed();
-		yeargroups = temp.split(",");
-	}
-	else if (string == "CLEAREVENTLIST\n")
-	{
-		model->clear();
-		model->setHorizontalHeaderLabels(QStringList() << "Year" << "Name");
-	}
-	else if (string.startsWith("ADDEVENT"))
-	{
-		QString temp = string.remove(0, 9);
-		QStringList lists = temp.split(";");
-		QString year = lists[0];
-		QString event = lists[1];
-		event = event.remove("\n");
-		model->appendRow(QList<QStandardItem *>() << new QStandardItem(year) << new QStandardItem(event));
+			progressDialog->setText("Adding events...");
+			progressDialog->setValue(10);
+		}
+		else if (string == "DONELOADING\n")
+		{
+			progressDialog->setValue(100);
+			progressDialog->setText("Complete!");
+			progressDialog->hide();
+		}
 	}
 }
 
