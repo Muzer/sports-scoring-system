@@ -58,7 +58,7 @@ void AddEventDialog::moveUp()
 	int i = ui->treeView->currentIndex().row();
 	if (i > 0)
 	{
-		QStandardItem *item = new QStandardItem(model->item(i));
+		QStandardItem *item = model->item(i);
 		model->removeRow(i);
 		model->insertRow(i - 1, item);
 	}
@@ -69,7 +69,7 @@ void AddEventDialog::moveDown()
 	int i = ui->treeView->currentIndex().row();
 	if (i != -1 && i < model->rowCount() - 1)
 	{
-		QStandardItem *item = new QStandardItem(model->item(i));
+		QStandardItem *item = model->item(i);
 		model->removeRow(i);
 		model->insertRow(i + 1, item);
 	}
