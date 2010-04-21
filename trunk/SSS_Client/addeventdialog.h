@@ -4,6 +4,9 @@
 #include <QDialog>
 #include <QStringList>
 #include <QStandardItemModel>
+#include <iostream>
+
+using namespace std;
 
 namespace Ui {
     class AddEventDialog;
