@@ -58,9 +58,18 @@ void AddEventDialog::moveUp()
 	int i = ui->treeView->currentIndex().row();
 	if (i > 0)
 	{
-		QStandardItem *item = model->item(i);
-		model->removeRow(i);
-		model->insertRow(i - 1, item);
+		QString text = model->item(i, 0)->text();
+		QString text2 = model->item(i, 1)->text();
+		QString nText = model->item(i - 1, 0)->text();
+		QString nText2 = model->item(i - 1, 1)->text();
+
+		model->item(i, 0)->setText(nText);
+		model->item(i, 1)->setText(nText2);
+
+		model->item(i - 1, 0)->setText(text);
+		model->item(i - 1, 1)->setText(text2);
+
+		ui->treeView->setCurrentIndex(model->index(i - 1, 0));
 	}
 }
 
@@ -69,8 +78,17 @@ void AddEventDialog::moveDown()
 	int i = ui->treeView->currentIndex().row();
 	if (i != -1 && i < model->rowCount() - 1)
 	{
-		QStandardItem *item = model->item(i);
-		model->removeRow(i);
-		model->insertRow(i + 1, item);
+		QString text = model->item(i, 0)->text();
+		QString text2 = model->item(i, 1)->text();
+		QString nText = model->item(i + 1, 0)->text();
+		QString nText2 = model->item(i + 1, 1)->text();
+
+		model->item(i, 0)->setText(nText);
+		model->item(i, 1)->setText(nText2);
+
+		model->item(i + 1, 0)->setText(text);
+		model->item(i + 1, 1)->setText(text2);
+
+		ui->treeView->setCurrentIndex(model->index(i + 1, 0));
 	}
 }
