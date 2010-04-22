@@ -110,15 +110,15 @@ void Server::start()
 		exit(0);
 	}
 
-	printColour(":: Server Started Successfully!", "blue");
+	printColour(":: Server Started Successfully!", "green");
 }
 
 void Server::newConnection()
 {
 	while (tcpServer->hasPendingConnections())
 	{
-		printColour(":: New Connection...", "blue");
 		QTcpSocket *socket = tcpServer->nextPendingConnection();
+		printColour(":: New Connection from " + QString(socket->peerAddress().toString()), "green");
 		Client *client = new Client(clients.count(), socket, &database, name, username, password, yeargroups);
 		connect(client, SIGNAL(addedEvent(QString,QString)), this, SLOT(addedEvent(QString,QString)));
 		connect(client, SIGNAL(removedEvent(QString)), this, SLOT(removedEvent(QString)));
