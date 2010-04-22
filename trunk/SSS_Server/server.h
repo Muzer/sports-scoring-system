@@ -21,6 +21,8 @@ public:
     Server();
 	~Server();
 
+	bool openConfigFile();
+	bool openDatabase();
 	void start();
 
 private:
@@ -37,6 +39,7 @@ private slots:
 	void newConnection();
 	void addedEvent(QString yeargroup, QString event);
 	void removedEvent(QString name);
+	void addedEventRow(QString nameId);
 };
 
 #endif // SERVER_H

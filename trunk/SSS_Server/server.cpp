@@ -19,16 +19,9 @@ Server::~Server()
 	}
 }
 
-void Server::start()
+bool Server::openConfigFile()
 {
-	printColour(":: Starting Server...", "blue");
-
 	bool fine = false;
-
-	name = "SSS";
-	username = "admin";
-	password = "password";
-	yeargroups = "Year 7,Year 8,Year 9,Year 10,Year 11,Year 12,Year 13";
 
 	QFile fp("config.ini");
 	if (fp.open(QIODevice::Text | QIODevice::ReadOnly))
@@ -72,6 +65,13 @@ void Server::start()
 		printColour(QString(":: Could not open \"config.ini\": ") + fp.errorString(), "red");
 	}
 
+	return fine;
+}
+
+bool Server::openDatabase()
+{
+	bool fine = false;
+
 	database.setDatabaseName("database.db");
 
 	if (database.open())
@@ -83,6 +83,25 @@ void Server::start()
 		printColour(QString(":: Could not open \"database.db\": ") + database.lastError().text(), "red");
 		fine = false;
 	}
+
+	return fine;
+}
+
+void Server::start()
+{
+	printColour(":: Starting Server...", "blue");
+
+	bool fine = false;
+
+	name = "SSS";
+	username = "admin";
+	password = "password";
+	yeargroups = "Year 7,Year 8,Year 9,Year 10,Year 11,Year 12,Year 13";
+
+	fine = openConfigFile();
+
+	if (fine)
+		fine = openDatabase();
 
 	if (fine)
 	{
@@ -122,6 +141,7 @@ void Server::newConnection()
 		Client *client = new Client(clients.count(), socket, &database, name, username, password, yeargroups);
 		connect(client, SIGNAL(addedEvent(QString,QString)), this, SLOT(addedEvent(QString,QString)));
 		connect(client, SIGNAL(removedEvent(QString)), this, SLOT(removedEvent(QString)));
+		connect(client, SIGNAL(addedEventRow(QString)), this, SLOT(addedEventRow(QString)));
 		clients.append(client);
 	}
 }
@@ -130,7 +150,7 @@ void Server::addedEvent(QString yeargroup, QString event)
 {
 	for (int i = 0; i < clients.count(); i++)
 	{
-		clients[i]->writeEvent(yeargroup, event);
+		clients[i]->sendEvent(yeargroup, event);
 	}
 }
 
@@ -138,6 +158,14 @@ void Server::removedEvent(QString name)
 {
 	for (int i = 0; i < clients.count(); i++)
 	{
-		clients[i]->writeRemoveEvent(name);
+		clients[i]->sendRemoveEvent(name);
+	}
+}
+
+void Server::addedEventRow(QString nameId)
+{
+	for (int i = 0; i < clients.count(); i++)
+	{
+		clients[i]->sendAddEventRow(nameId);
 	}
 }

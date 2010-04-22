@@ -1,5 +1,9 @@
+#include <QMessageBox>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "connectdialog.h"
+#include "addeventdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnect()));
 	connect(ui->actionAdd_Table, SIGNAL(triggered()), this, SLOT(addEvent()));
 	connect(ui->actionRemove_Table, SIGNAL(triggered()), this, SLOT(removeEvent()));
+
+	connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(showSheetForm()));
+
+	ui->treeView->setEditTriggers(QTreeView::NoEditTriggers);
 
 	socket = new QTcpSocket(this);
 	connect(socket, SIGNAL(connected()), this, SLOT(connected()));
@@ -63,6 +71,16 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+QString MainWindow::toSqlName(QString sssName)
+{
+	return sssName.replace(" ", "_");
+}
+
+QString MainWindow::toSssName(QString sqlName)
+{
+	return sqlName.replace("_", " ");
 }
 
 void MainWindow::writeNewEvent(QString yeargroup, QString eventname, AddEventDialog *dialog)
@@ -168,6 +186,22 @@ void MainWindow::removeEvent()
 	}
 }
 
+void MainWindow::showSheetForm()
+{
+	int i = ui->treeView->currentIndex().row();
+	if (i >= 0)
+	{
+		QString name = model->item(i, 0)->text() + "|" + model->item(i, 1)->text();
+		for (int i = 0; i < sheetForms.count(); i++)
+		{
+			if (sheetForms[i]->getName() == name)
+			{
+				sheetForms[i]->show();
+			}
+		}
+	}
+}
+
 void MainWindow::disconnect()
 {
 	btnConnect->setEnabled(true);
@@ -181,6 +215,12 @@ void MainWindow::disconnect()
 
 	model->clear();
 	model->setHorizontalHeaderLabels(QStringList() << "Year" << "Event");
+
+	for (int i = 0; i < sheetForms.count(); i++)
+	{
+		delete sheetForms[i];
+	}
+	sheetForms.clear();
 
 	socket->disconnectFromHost();
 	setWindowTitle(QString("Sports Scoring System"));
@@ -204,6 +244,8 @@ void MainWindow::readyRead()
 		QByteArray data = socket->readLine(65563);
 		QString string = data.data();
 		string = string.trimmed();
+
+		cout << string.toStdString() << endl;
 
 		if (string == "AUTHBAD")
 		{
@@ -236,6 +278,17 @@ void MainWindow::readyRead()
 			progressDialog->setText("Clearing Event List...");
 			progressDialog->setValue(4);
 		}
+		else if (string.startsWith("ADDEVENTROW"))
+		{
+			QString nameId = string.remove(0, 12);
+			for (int i = 0; i < sheetForms.count(); i++)
+			{
+				if (sheetForms[i]->getName() == nameId)
+				{
+					sheetForms[i]->addRow();
+				}
+			}
+		}
 		else if (string.startsWith("ADDEVENT"))
 		{
 			QString temp = string.remove(0, 9);
@@ -243,6 +296,8 @@ void MainWindow::readyRead()
 			QString year = lists[0];
 			QString event = lists[1];
 			model->appendRow(QList<QStandardItem *>() << new QStandardItem(year) << new QStandardItem(event));
+
+			sheetForms.append(new SheetForm(0, year + "|" + event, socket));
 
 			progressDialog->setText("Adding events...");
 			progressDialog->setValue(10);
@@ -263,6 +318,23 @@ void MainWindow::readyRead()
 					{
 						model->removeRow(i);
 					}
+				}
+			}
+		}
+		else if (string.startsWith("SETEVENTFIELDS"))
+		{
+			QStringList sections = string.remove(0, 15).split(";");
+			QStringList fields = sections[2].split("|");
+			for (int j = 0; j < sheetForms.count(); j++)
+			{
+				QString name = toSssName(sections[0]) + "|" + toSssName(sections[1]);
+				if (sheetForms[j]->getName() == name)
+				{
+					for (int i = 0; i < fields.count(); i++)
+					{
+						sheetForms[j]->addHeader(toSssName(fields[i]));
+					}
+					sheetForms[j]->setHeader();
 				}
 			}
 		}

@@ -4,14 +4,13 @@
 #include <QMainWindow>
 #include <QToolButton>
 #include <QTcpSocket>
-#include <QMessageBox>
 #include <QResizeEvent>
 #include <QStandardItemModel>
 #include <iostream>
 
-#include "connectdialog.h"
 #include "addeventdialog.h"
 #include "progressdialog.h"
+#include "sheetform.h"
 
 using namespace std;
 
@@ -24,6 +23,9 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+	QString toSqlName(QString sssName);
+	QString toSssName(QString sqlName);
 
 	void writeNewEvent(QString yeargroup, QString eventname, AddEventDialog *dialog);
 
@@ -48,10 +50,14 @@ private:
 
 	ProgressDialog *progressDialog;
 
+	QList<SheetForm *> sheetForms;
+
 private slots:
 	void showConnectDialog();
 	void addEvent();
 	void removeEvent();
+
+	void showSheetForm();
 
 	void connected();
 	void disconnect();

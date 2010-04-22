@@ -8,6 +8,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlRecord>
 #include <iostream>
 #include <sstream>
 
@@ -19,8 +20,19 @@ class Client : public QObject
 public:
 	Client(int i, QTcpSocket *socket, QSqlDatabase *db, QString n, QString username, QString password, QString years);
 	~Client();
-	void writeEvent(QString yeargroup, QString event);
-	void writeRemoveEvent(QString name);
+	void sendEvent(QString yeargroup, QString event);
+	void sendRemoveEvent(QString name);
+	void sendAddEventRow(QString nameId);
+
+	void writeAuthDone(QString string);
+	void writeAuth(QString string);
+	void writeAddEvent(QString string);
+	void writeRemoveEvent(QString string);
+	void writeAddEventRow(QString string);
+
+	QString toSqlName(QString sssName);
+	QString toSssName(QString sqlName);
+
 	bool checkAuthentication();
 
 private:
@@ -41,6 +53,8 @@ private:
 signals:
 	void addedEvent(QString yeargroup, QString event);
 	void removedEvent(QString name);
+
+	void addedEventRow(QString name);
 
 private slots:
 	void disconnected();
