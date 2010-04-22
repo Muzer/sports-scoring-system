@@ -9,6 +9,12 @@ Client::Client(int i, QTcpSocket *socket, QSqlDatabase *db, QString n, QString u
 	correctUsername = username;
 	correctPassword = password;
 	yeargroups = years;
+	authenticated = false;
+
+	peerAddress = tcpSocket->peerAddress().toString();
+	stringstream ss;
+	ss << "Client [" << id << "]:" << peerAddress.toStdString() << ")";
+	stringId = ss.str().c_str();
 
 	connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 	connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
@@ -20,11 +26,44 @@ Client::~Client()
 	delete tcpSocket;
 }
 
+void Client::writeEvent(QString yeargroup, QString event)
+{
+	if (checkAuthentication())
+	{
+		tcpSocket->write("ADDEVENT ");
+		tcpSocket->write(yeargroup.toStdString().c_str());
+		tcpSocket->write(";");
+		tcpSocket->write(event.toStdString().c_str());
+		tcpSocket->write("\n");
+		tcpSocket->flush();
+	}
+}
+
+void Client::writeRemoveEvent(QString name)
+{
+	if (checkAuthentication())
+	{
+		tcpSocket->write("REMOVEEVENT ");
+		tcpSocket->write(name.toStdString().c_str());
+		tcpSocket->write("\n");
+		tcpSocket->flush();
+	}
+}
+
+bool Client::checkAuthentication()
+{
+	if (!authenticated)
+	{
+		printColour(QString(":: ") + stringId + QString(" is trying to do something without authenticating."), "red");
+		tcpSocket->disconnectFromHost();
+	}
+	return authenticated;
+}
+
 void Client::disconnected()
 {
 	stringstream ss;
-	ss << ":: Client " << id << " Disconnected.";
-	printColour(ss.str().c_str(), "blue");
+	printColour(QString(":: ") + stringId + QString(" disconnected."), "blue");
 }
 
 void Client::readyRead()
@@ -35,7 +74,7 @@ void Client::readyRead()
 		QString string = data.data();
 		string = string.trimmed();
 
-		if (string == "AUTHDONE")
+		if (string == "AUTHDONE" && checkAuthentication())
 		{
 			QString string = "YEARGROUPS ";
 			string.append(yeargroups);
@@ -78,14 +117,18 @@ void Client::readyRead()
 				n.append(name);
 				n.append("\n");
 				tcpSocket->write(n.toStdString().c_str());
+
+				authenticated = true;
 			}
 			else
 			{
 				tcpSocket->write("AUTHBAD\n");
 				tcpSocket->disconnectFromHost();
+
+				authenticated = false;
 			}
 		}
-		else if (string.startsWith("ADDEVENT"))
+		else if (string.startsWith("ADDEVENT") && checkAuthentication())
 		{
 			QString temp = string.remove(0, 9);
 			QStringList lists = temp.split(";");
@@ -127,7 +170,7 @@ void Client::readyRead()
 
 			emit addedEvent(yeargroup.replace("_", " "), name.replace("_", " "));
 		}
-		else if (string.startsWith("REMOVEEVENT"))
+		else if (string.startsWith("REMOVEEVENT") && checkAuthentication())
 		{
 			QString name = string.remove(0, 12);
 
@@ -142,28 +185,9 @@ void Client::readyRead()
 		else
 		{
 			stringstream ss;
-			ss << ":: " << "[" << id << "] " << string.toStdString();
-			printColour(ss.str().c_str(), "green");
+			printColour(QString(":: ") + stringId + QString(" said \"") + string + QString("\""), "blue");
 		}
 	}
-}
-
-void Client::writeEvent(QString yeargroup, QString event)
-{
-	tcpSocket->write("ADDEVENT ");
-	tcpSocket->write(yeargroup.toStdString().c_str());
-	tcpSocket->write(";");
-	tcpSocket->write(event.toStdString().c_str());
-	tcpSocket->write("\n");
-	tcpSocket->flush();
-}
-
-void Client::writeRemoveEvent(QString name)
-{
-	tcpSocket->write("REMOVEEVENT ");
-	tcpSocket->write(name.toStdString().c_str());
-	tcpSocket->write("\n");
-	tcpSocket->flush();
 }
 
 void printColour(QString text, QString colour)

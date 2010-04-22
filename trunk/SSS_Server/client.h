@@ -21,15 +21,20 @@ public:
 	~Client();
 	void writeEvent(QString yeargroup, QString event);
 	void writeRemoveEvent(QString name);
+	bool checkAuthentication();
 
 private:
 	QTcpSocket *tcpSocket;
 	int id;
+	bool authenticated;
 
 	QString correctUsername;
 	QString correctPassword;
 	QString name;
 	QString yeargroups;
+
+	QString peerAddress;
+	QString stringId;
 
 	QSqlDatabase *database;
 
