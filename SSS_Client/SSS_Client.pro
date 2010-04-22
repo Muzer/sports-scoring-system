@@ -8,13 +8,16 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     connectdialog.cpp \
     addeventdialog.cpp \
-    progressdialog.cpp
+    progressdialog.cpp \
+    sheetform.cpp
 HEADERS += mainwindow.h \
     connectdialog.h \
     addeventdialog.h \
-    progressdialog.h
+    progressdialog.h \
+    sheetform.h
 FORMS += mainwindow.ui \
     connectdialog.ui \
     addeventdialog.ui \
-    progressdialog.ui
+    progressdialog.ui \
+    sheetform.ui
 RESOURCES += resources.qrc
