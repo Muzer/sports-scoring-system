@@ -1,0 +1,1 @@
+Will support multiple computers in a client/server model, like things like X. Only one trasfer at a time to start off with, but that could change if we need to. We got the idea for this after we had a hard time doing it via pen and paper.
